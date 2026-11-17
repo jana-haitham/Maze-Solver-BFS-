@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive Breadth-First Search maze solver for CF321 Project 1.">
+  <title>Maze Solver | BFS Interactive Demo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Maze Solver home"><span class="brand-mark">M</span><span>MAZE<span class="brand-light">LAB</span></span></a>
+    <div class="course-tag">CF321 <span>·</span> FUNDAMENTALS OF AI</div>
+  </header>
+
+  <main id="top" class="shell">
+    <section class="hero">
+      <div>
+        <div class="eyebrow"><span class="live-dot"></span> INTERACTIVE ALGORITHM PLAYGROUND</div>
+        <h1>Find the <span>shortest path.</span></h1>
+        <p class="hero-copy">Build a maze, place obstacles, and watch Breadth-First Search explore it level by level.</p>
+      </div>
+      <div class="algorithm-chip"><span class="chip-icon">⌘</span><span><b>BFS</b><small>UNWEIGHTED SHORTEST PATH</small></span></div>
+    </section>
+
+    <section class="workspace">
+      <div class="panel maze-panel">
+        <div class="panel-heading">
+          <div><div class="section-kicker">01 / INPUT</div><h2>Maze editor</h2></div>
+          <span class="edit-status" id="editStatus">EDIT MODE</span>
+        </div>
+        <div class="toolbar" role="group" aria-label="Cell editing tools">
+          <button class="tool active" data-tool="wall" type="button"><span class="tool-swatch wall-swatch"></span>Wall</button>
+          <button class="tool" data-tool="start" type="button"><span class="tool-swatch start-swatch">S</span>Start</button>
+          <button class="tool" data-tool="goal" type="button"><span class="tool-swatch goal-swatch">G</span>Goal</button>
+          <button class="tool" data-tool="erase" type="button"><span class="tool-swatch erase-swatch">⌫</span>Erase</button>
+        </div>
+        <div class="maze-wrap"><div id="maze" class="maze" aria-label="Editable maze grid"></div></div>
+        <div class="legend">
+          <span><i class="legend-cell start"></i>Start</span><span><i class="legend-cell goal"></i>Goal</span><span><i class="legend-cell wall"></i>Wall</span><span><i class="legend-cell visited"></i>Explored</span><span><i class="legend-cell path"></i>Shortest path</span>
+        </div>
+        <div class="editor-controls">
+          <label class="size-control">Rows <input id="rowsInput" type="number" min="2" max="15" value="9"></label>
+          <label class="size-control">Cols <input id="colsInput" type="number" min="2" max="20" value="13"></label>
+          <button id="resizeBtn" class="button button-quiet" type="button">Apply size</button>
+          <button id="clearBtn" class="button button-quiet" type="button">Clear walls</button>
+        </div>
+        <div class="hint"><span>TIP</span> Select a tool, then click a cell. Drag is not required.</div>
+      </div>
+
+      <aside class="side-column">
+        <div class="panel controls-panel">
+          <div class="section-kicker">02 / ALGORITHM</div><h2>Run BFS</h2>
+          <p class="muted">Choose a maze or run the search on your custom layout.</p>
+          <label class="select-label" for="presetSelect">LOAD EXAMPLE</label>
+          <select id="presetSelect">
+            <option value="default">Default maze (solvable)</option>
+            <option value="detour">Wall detour</option>
+            <option value="blocked">No solution</option>
+            <option value="open">Open grid</option>
+          </select>
+          <div class="action-stack">
+            <button id="solveBtn" class="button button-primary" type="button"><span>▶</span> Solve maze</button>
+            <div class="button-row"><button id="stepBtn" class="button button-secondary" type="button">Step</button><button id="playBtn" class="button button-secondary" type="button">▶ Animate</button></div>
+            <button id="resetBtn" class="button button-quiet full" type="button">↺ Reset view</button>
+          </div>
+          <div class="speed-row"><label for="speedInput">Animation speed</label><select id="speedInput"><option value="650">Slow</option><option value="300" selected>Normal</option><option value="90">Fast</option></select></div>
+        </div>
+
+        <div class="panel results-panel">
+          <div class="panel-heading compact"><div><div class="section-kicker">03 / OUTPUT</div><h2>Search results</h2></div><span id="resultBadge" class="result-badge idle">NOT RUN</span></div>
+          <div class="metrics">
+            <div class="metric"><span>PATH COST</span><strong id="pathCost">—</strong><small>number of moves</small></div>
+            <div class="metric"><span>NODES EXPLORED</span><strong id="exploredCount">0</strong><small>dequeued & processed</small></div>
+          </div>
+          <div class="progress-block"><div class="progress-label"><span>SEARCH PROGRESS</span><b id="progressText">Ready</b></div><div class="progress-track"><div id="progressBar" class="progress-bar"></div></div></div>
+          <div id="message" class="message" aria-live="polite">Set your maze, then press <b>Solve maze</b>.</div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="explain-grid">
+      <article class="info-card"><span class="info-number">01</span><h3>FIFO Queue</h3><p>BFS visits the oldest discovered cell first, exploring the maze one level at a time.</p></article>
+      <article class="info-card"><span class="info-number">02</span><h3>Visited set</h3><p>Each reachable cell is added once, preventing repeated visits and infinite loops.</p></article>
+      <article class="info-card"><span class="info-number">03</span><h3>Parent map</h3><p>Each discovered cell remembers its predecessor so the shortest path can be reconstructed.</p></article>
+    </section>
+
+    <section class="complexity"><div><div class="section-kicker">WHY BFS?</div><h2>Shortest path, guaranteed.</h2><p>When every move has equal cost, BFS finds a path with the minimum number of moves.</p></div><div class="complexity-values"><div><span>TIME</span><b>O(V + E)</b></div><div><span>SPACE</span><b>O(V)</b></div><small>V = reachable cells · E = valid neighbor connections</small></div></section>
+    <footer><span>CF321 · PROJECT 1</span><span>MAZE SOLVER USING BREADTH-FIRST SEARCH</span><span>BUILT FOR LEARNING</span></footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
